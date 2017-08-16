@@ -98,3 +98,97 @@
 	});
 
 })(jQuery);
+
+$contactForm = $('#contact');
+$errorField = $('#error');
+$nameField = $('#name');
+$emailField = $('#email');
+$messageField = $('#message');
+$submitButton = $('#submitButton');
+
+$(function () {
+    $submitButton.click(function (e) {
+    	var name = $nameField.val();
+		var email = $emailField.val();
+		var message = $messageField.val();
+
+		if (!validate(name, email, message)) {
+			return false;
+		}
+
+        sendEmail(name, email, message);
+    });
+});
+
+function validate(name, email, message) {
+	var okay = true;
+
+	if (name === '') {
+		$errorField.removeClass('hidden');
+		$errorField.val($errorField.val() + '\nYour name is required.');
+			
+		okay = false;
+	}
+
+	if (email === '') {
+		$errorField.removeClass('hidden');
+		$errorField.val($errorField.val() + '\nYour email is required.');
+
+		okay = false;
+	} else if (!validateEmail(email)) {
+		$errorField.removeClass('hidden');
+		$errorField.val($errorField.val() + '\nThe provided email is invalid.');
+
+		okay = false;
+	}
+
+	if (message === '') {
+		$errorField.removeClass('hidden');
+		$errorField.val($errorField.val() + '\nA message is required.');
+
+		okay = false;
+	}
+
+	return okay;
+}
+
+function validateEmail(email) {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+}
+
+function sendEmail(name, email, message) {
+	AWS.config.region = 'us-east-1';
+	AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+    	IdentityPoolId: 'us-east-1:efd91b25-7af9-4141-9f5f-62d5f6dfc904',
+	});
+
+	var payload = {
+		"subject": "Steltra Fitness: You have a new contact request",
+		"message": message,
+		"from": email,
+		"name": name
+	}
+
+	console.log('Sending Payload: ' + payload);
+
+	var lambda = new AWS.Lambda({region: 'us-east-1', apiVersion: '2017-08-01'});
+	// create JSON object for parameters for invoking Lambda function
+	var params = {
+	  FunctionName : 'sendEmail',
+	  InvocationType : 'RequestResponse',
+	  LogType : 'None',
+	  Payload : JSON.stringify(payload)
+	};
+	// create variable to hold data returned by the Lambda function
+	var results;
+
+	lambda.invoke(params, function(error, data) {
+	  if (error) {
+	    console.log(error);
+	    return;
+	  } else {
+	    alert('Thank you! I will be in touch with you shortly.');
+	  }
+	});
+}

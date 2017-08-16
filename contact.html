@@ -37,7 +37,12 @@
 						soon as possible.</p>
 					</header>
 					<div class="box">
-						<form method="post" action="#">
+						<div class="row uniform 50%">
+							<div class="12u">
+								<textarea readonly class="hidden error" name="error" id="error"></textarea>
+							</div>
+						</div>
+						<form name="contact" id="contact" method="post" action="#">
 							<div class="row uniform 50%">
 								<div class="6u 12u(mobilep)">
 									<input type="text" name="name" id="name" value="" placeholder="Name" />
@@ -54,7 +59,7 @@
 							<div class="row uniform">
 								<div class="12u">
 									<ul class="actions align-center">
-										<li><input class="button special" type="submit" value="Send Message" /></li>
+										<li><input class="button special" name="submitButton" id="submitButton" type="button" value="Send Message" /></li>
 									</ul>
 								</div>
 							</div>
@@ -83,6 +88,7 @@
 			<script src="assets/js/jquery.scrollgress.min.js"></script>
 			<script src="assets/js/skel.min.js"></script>
 			<script src="assets/js/util.js"></script>
+			<script src="assets/js/aws-sdk.min.js"></script>
 			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
 			<script src="assets/js/main.js"></script>
 
