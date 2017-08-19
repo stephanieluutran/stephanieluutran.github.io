@@ -100,7 +100,11 @@
 })(jQuery);
 
 $contactForm = $('#contact');
-$errorField = $('#error');
+
+$nameErrorField = $('#name-error');
+$emailErrorField = $('#email-error');
+$messageErrorField = $('#message-error');
+
 $nameField = $('#name');
 $emailField = $('#email');
 $messageField = $('#message');
@@ -121,30 +125,34 @@ $(function () {
 });
 
 function validate(name, email, message) {
+	$nameErrorField.addClass('hidden');
+	$emailErrorField.addClass('hidden');
+	$messageErrorField.addClass('hidden');
+
 	var okay = true;
 
 	if (name === '') {
-		$errorField.removeClass('hidden');
-		$errorField.val($errorField.val() + '\nYour name is required.');
-			
+		$nameErrorField.removeClass('hidden');
+		$nameErrorField.val('Your name is required.');
+		
 		okay = false;
 	}
 
 	if (email === '') {
-		$errorField.removeClass('hidden');
-		$errorField.val($errorField.val() + '\nYour email is required.');
+		$emailErrorField.removeClass('hidden');
+		$emailErrorField.val('Your email is required.');
 
 		okay = false;
 	} else if (!validateEmail(email)) {
-		$errorField.removeClass('hidden');
-		$errorField.val($errorField.val() + '\nThe provided email is invalid.');
+		$emailErrorField.removeClass('hidden');
+		$emailErrorField.val('The provided email is invalid.');
 
 		okay = false;
 	}
 
 	if (message === '') {
-		$errorField.removeClass('hidden');
-		$errorField.val($errorField.val() + '\nA message is required.');
+		$messageErrorField.removeClass('hidden');
+		$messageErrorField.val('A message is required.');
 
 		okay = false;
 	}
@@ -185,7 +193,8 @@ function sendEmail(name, email, message) {
 
 	lambda.invoke(params, function(error, data) {
 	  if (error) {
-	    console.log(error);
+	  	console.log(error);
+	  	alert('Sorry, an error occurred. Please refresh the page and try again.');
 	    return;
 	  } else {
 	    alert('Thank you! I will be in touch with you shortly.');
